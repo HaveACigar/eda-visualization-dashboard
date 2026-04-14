@@ -1,0 +1,26 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Data (keep raw tracked, ignore large processed files)
+data/processed/*.csv
+data/processed/*.parquet
+
+# Distribution
+dist/
+*.egg-info/

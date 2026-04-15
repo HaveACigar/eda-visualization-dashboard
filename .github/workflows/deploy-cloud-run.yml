@@ -31,11 +31,19 @@ jobs:
 
       - name: Build and push container image
         run: |
-          BUILD_ID=$(gcloud builds submit \
+          BUILD_OUTPUT=$(gcloud builds submit \
             --project "$PROJECT_ID" \
             --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
-            --async \
-            --format='value(metadata.build.id)' .)
+            --async . 2>&1)
+
+          echo "$BUILD_OUTPUT"
+
+          BUILD_ID=$(printf '%s\n' "$BUILD_OUTPUT" | sed -n 's|.*builds/\([A-Za-z0-9-]*\).*|\1|p' | head -1)
+
+          if [ -z "$BUILD_ID" ]; then
+            echo "Unable to determine Cloud Build ID from gcloud output"
+            exit 1
+          fi
 
           echo "Started Cloud Build: $BUILD_ID"
 

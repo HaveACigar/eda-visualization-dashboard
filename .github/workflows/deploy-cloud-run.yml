@@ -29,6 +29,13 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v3
 
+      - name: Enable required APIs
+        run: |
+          gcloud services enable \
+            cloudbuild.googleapis.com \
+            run.googleapis.com \
+            --project "$PROJECT_ID"
+
       - name: Build and push container image
         run: |
           BUILD_OUTPUT=$(gcloud builds submit \

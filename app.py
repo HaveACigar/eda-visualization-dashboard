@@ -143,8 +143,18 @@ st.plotly_chart(trend_line(trend, trend_metric), use_container_width=True)
 # ────────────────────────────────────────────
 st.header("🔬 Scatter Plot & Regression")
 scat_col1, scat_col2 = st.columns(2)
+
+if "scat_x" not in st.session_state:
+    st.session_state["scat_x"] = METRIC_OPTIONS[1]
+if "scat_y" not in st.session_state:
+    st.session_state["scat_y"] = METRIC_OPTIONS[0]
+
+x_options = [metric for metric in METRIC_OPTIONS if metric != st.session_state.get("scat_y")]
+if st.session_state.get("scat_x") not in x_options:
+    st.session_state["scat_x"] = x_options[0]
+
 with scat_col1:
-    x_var = st.selectbox("X-axis:", METRIC_OPTIONS, index=1, key="scat_x")
+    x_var = st.selectbox("X-axis:", x_options, key="scat_x")
 
 y_options = [metric for metric in METRIC_OPTIONS if metric != x_var]
 if st.session_state.get("scat_y") not in y_options:

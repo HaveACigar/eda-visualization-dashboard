@@ -31,9 +31,34 @@ jobs:
 
       - name: Build and push container image
         run: |
-          gcloud builds submit \
+          BUILD_ID=$(gcloud builds submit \
             --project "$PROJECT_ID" \
-            --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" .
+            --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+            --async \
+            --format='value(metadata.build.id)' .)
+
+          echo "Started Cloud Build: $BUILD_ID"
+
+          while true; do
+            STATUS=$(gcloud builds describe "$BUILD_ID" \
+              --project "$PROJECT_ID" \
+              --format='value(status)')
+
+            echo "Cloud Build status: $STATUS"
+
+            if [ "$STATUS" = "SUCCESS" ]; then
+              break
+            fi
+
+            if [ "$STATUS" = "FAILURE" ] || [ "$STATUS" = "INTERNAL_ERROR" ] || [ "$STATUS" = "TIMEOUT" ] || [ "$STATUS" = "CANCELLED" ] || [ "$STATUS" = "EXPIRED" ]; then
+              gcloud builds describe "$BUILD_ID" \
+                --project "$PROJECT_ID" \
+                --format='yaml(status,logUrl,results,images)'
+              exit 1
+            fi
+
+            sleep 10
+          done
 
       - name: Deploy to Cloud Run
         run: |

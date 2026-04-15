@@ -82,6 +82,30 @@ python src/cleaning.py
 streamlit run app.py
 ```
 
+## Deploy to Cloud Run
+
+This repository includes CI/CD for Cloud Run in [`.github/workflows/deploy-cloud-run.yml`](.github/workflows/deploy-cloud-run.yml).
+
+### Prerequisites
+
+- A Google Cloud project with Cloud Run + Cloud Build enabled
+- Repository secret in this repo:
+	- `GCP_SA_KEY` (service account JSON with Cloud Run deploy permissions)
+
+### Deploy
+
+- Push to `main` (or run workflow manually via `workflow_dispatch`)
+- The workflow builds the container and deploys service `eda-visualization-dashboard`
+- The workflow logs print the live URL as `Cloud Run URL: https://...`
+
+### Portfolio Embed
+
+Use the deployed Cloud Run URL as the value for:
+
+- `REACT_APP_EDA_DASHBOARD_URL`
+
+in your portfolio website repo secrets, then redeploy the portfolio site.
+
 ## Dashboard Sections
 
 1. **Data Quality Overview** — raw vs cleaned comparison with missing-data charts

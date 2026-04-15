@@ -17,8 +17,8 @@ env/
 # OS
 .DS_Store
 
-# Data (keep raw tracked, ignore large processed files)
-data/processed/*.csv
+# Data (keep raw tracked, ignore large processed files — except our clean output)
+!data/processed/global_health_clean.csv
 data/processed/*.parquet
 
 # Distribution

@@ -145,8 +145,13 @@ st.header("🔬 Scatter Plot & Regression")
 scat_col1, scat_col2 = st.columns(2)
 with scat_col1:
     x_var = st.selectbox("X-axis:", METRIC_OPTIONS, index=1, key="scat_x")
+
+y_options = [metric for metric in METRIC_OPTIONS if metric != x_var]
+if st.session_state.get("scat_y") not in y_options:
+    st.session_state["scat_y"] = y_options[0]
+
 with scat_col2:
-    y_var = st.selectbox("Y-axis:", METRIC_OPTIONS, index=0, key="scat_y")
+    y_var = st.selectbox("Y-axis:", y_options, key="scat_y")
 
 colour_by = st.checkbox("Colour by income group", value=True)
 fig = scatter_with_regression(
